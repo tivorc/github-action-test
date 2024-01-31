@@ -3,7 +3,7 @@ import { createClient } from 'graphql-ws';
 import webSocketImpl from 'ws';
 
 const TEACHER_NAME = "Napoleon Bonaparte";
-const API = process.env.WEBAPP_URL || "localhost:5172/graphql";
+const API = `${process.env.WEBAPP_URL}/graphql` || "localhost:5172/graphql";
 const query = "subscription { teacherAdded { name } }";
 const client = createClient({ url: `ws://${API}`, webSocketImpl });
 
@@ -38,7 +38,7 @@ test("Should send notification after save an new order", () => {
           resolve();
         },
         error: error => {
-          console.error('error: ', error);
+          console.error('error: ', error.message);
           reject();
         }
       },
