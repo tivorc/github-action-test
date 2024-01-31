@@ -86,6 +86,8 @@ jobs:
 
       # Run tests
       - name: Run tests
-        run: npm run test
+        run: |
+          cd SchoolAPI.Test.WS
+          npm run test
         env:
           WEBAPP_URL: ${{ env.WEBAPP_URL }}
