@@ -15,7 +15,7 @@ jobs:
       # Run MSSQL Container
       - name: Run MSSQL Container
         run: |
-          docker compose up -f ./docker-compose.yml
+          docker compose up
 
       # Wait for MSSQL to start
       - name: Wait for MSSQL to start
