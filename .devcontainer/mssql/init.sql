@@ -6,7 +6,7 @@ GO
 
 create table teacher(
   id        uniqueidentifier default newid()  not null,
-  name      varchar(250)                     not null
+  name      varchar(250)                      not null
 )
 go
 

@@ -1,9 +1,39 @@
 {
 	"name": "C# (.NET)",
-	"image": "mcr.microsoft.com/devcontainers/dotnet:1-8.0-jammy",
+	"dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 	"features": {
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
 		"ghcr.io/dhoeric/features/act:1": {},
 		"ghcr.io/devcontainers/features/node:1": {}
-	}
+	},
+	"customizations": {
+    "vscode": {
+      "settings": {
+        "mssql.connections": [
+          {
+            "server": "localhost",
+            "database": "school",
+            "authenticationType": "SqlLogin",
+            "user": "sa",
+            "password": "P@ssw0rd",
+            "emptyPasswordInput": false,
+            "savePassword": true,
+            "profileName": "mssql-container",
+            "trustServerCertificate": true
+          }
+        ]
+      },
+      "extensions": [
+        "ms-dotnettools.csharp",
+        "ms-mssql.mssql",
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        "GitHub.vscode-pull-request-github",
+        "GitHub.vscode-github-actions",
+        "ms-dotnettools.csdevkit"
+      ]
+    }
+  }
 }
