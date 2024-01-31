@@ -15,7 +15,7 @@ jobs:
       # Run MSSQL Container
       - name: Run MSSQL Container
         run: |
-          docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=P@ssw0rd" -v "./.devcontainer/mssql/:/scripts/" -p 1433:1433 --name mssql -d mcr.microsoft.com/mssql/server:2022-latest /bin/bash init_db.sh
+          docker compose up -f ./docker-compose.yml
 
       # Wait for MSSQL to start
       - name: Wait for MSSQL to start
