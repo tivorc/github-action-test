@@ -8,6 +8,10 @@ on:
     branches: 
       - main
 
+env:
+  DOTNET_VERSION: '8.0.101'
+  WEBAPP_URL: http://localhost:6900
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -27,7 +31,6 @@ jobs:
           set +e
           output=$(docker exec database /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P P@ssw0rd -i /test/test.sql 2>&1)
           is_up=$?
-          echo "$is_up: $output"
           while [ $is_up -ne 0 ] || [[ ! $output =~ "hay 56 registros" ]] ; do
             output=$(docker exec database /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P P@ssw0rd -i /test/test.sql 2>&1)
             is_up=$?
@@ -36,13 +39,30 @@ jobs:
           done
           set -e
 
-      # - uses: actions/setup-node@v4
-      #   with:
-      #     node-version: 20
-      # - name: Run server
-      #   run: |
-      #     node server.js &
-      #     sleep 5
-      # - name: Run tests
-      #   run: |
-      #     curl localhost:6000
+      # Setup .NET Core SDK
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      # Build and publish project
+      - name: Build and publish project
+        run: |
+          dotnet publish --configuration Release --output ./output SchoolAPI/SchoolAPI.csproj
+
+      # Run project in background
+      - name: Run project
+        run: dotnet ./output/SchoolAPI.dll &
+        env:
+          ASPNETCORE_ENVIRONMENT: Development
+          ASPNETCORE_URLS: {{ env.WEBAPP_URL }}
+
+      # Wait for project to start
+      - name: Wait for project to start
+        run: sleep 5
+
+      # Validate project is running
+      - name: Validate project is running
+        run: |
+          output=$(curl {{ env.WEBAPP_URL }}/hello 2>&1)
+          echo "$output"
