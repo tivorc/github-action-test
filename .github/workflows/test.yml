@@ -38,7 +38,7 @@ jobs:
           output=$(docker exec database /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P P@ssw0rd -i /test/test.sql 2>&1)
           is_up=$?
           echo "$is_up: $output"
-          while [ $is_up -ne 0 ] && [[ ! $output =~ "56" ]] ; do
+          while [ $is_up -ne 0 ] || [[ ! $output =~ "56" ]] ; do
             output=$(docker exec database /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P P@ssw0rd -i /test/test.sql 2>&1)
             is_up=$?
             echo "$is_up: $output"
