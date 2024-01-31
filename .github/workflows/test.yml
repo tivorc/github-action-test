@@ -34,6 +34,7 @@ jobs:
       # Test database connection
       - name: Test database connection
         run: |
+          set +e
           docker exec database /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P P@ssw0rd -i /test/test.sql
           is_up=$?
           echo "primer $is_up"
@@ -44,6 +45,7 @@ jobs:
             echo "dentro while $is_up"
             sleep 5 
           done
+          set -e
 
       # - uses: actions/setup-node@v4
       #   with:
