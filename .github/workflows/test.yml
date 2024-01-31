@@ -28,7 +28,7 @@ jobs:
         run: |
           docker compose -f ./.devcontainer/docker-compose.yml up -d db
           set +e
-          for i in {1..${{ env.RETRIES }};
+          for i in {1..${{ env.RETRIES }}};
           do
             output=$(docker exec database /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${{ env.DATABASE_PASSWORD }} -i /test/test.sql 2>&1)
             is_up=$?
@@ -52,7 +52,7 @@ jobs:
           dotnet publish --configuration Release --output ./output SchoolAPI/SchoolAPI.csproj
           dotnet ./output/SchoolAPI.dll &
           set +e
-          for i in {1..${{ env.RETRIES }};
+          for i in {1..${{ env.RETRIES }}};
           do
             output=$(curl -s -H "Content-Type: application/json" -d '{"query":"{ ping }"}' http://${{ env.WEBAPP_URL }}/graphql 2>&1)
             is_up=$?
