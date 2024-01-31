@@ -34,7 +34,7 @@ jobs:
       # Test database connection
       - name: Test database connection
         run: |
-          docker exec github-action-test-db-1 /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P P@ssw0rd -i /test/test.sql
+          docker exec database /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P P@ssw0rd -i /test/test.sql
 
       # - uses: actions/setup-node@v4
       #   with:
