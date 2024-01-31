@@ -33,6 +33,7 @@ services:
         # Run every script in /scripts
         # TODO set a flag so that this is only done once on creation, 
         #      and not every time the container runs
+        sleep 5
         /opt/mssql-tools/bin/sqlcmd -U sa -P $$MSSQL_SA_PASSWORD -l 30 -e -Q "CREATE DATABASE school"
         for foo in /scripts/*.sql
           do /opt/mssql-tools/bin/sqlcmd -U sa -P $$MSSQL_SA_PASSWORD -l 30 -e -i $$foo
