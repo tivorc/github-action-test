@@ -1,0 +1,14 @@
+{
+  "name": "schoolapi.test.ws",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest --run"
+  },
+  "dependencies": {
+    "graphql-ws": "5.14.3",
+    "vitest": "1.2.2",
+    "ws": "8.16.0"
+  }
+}

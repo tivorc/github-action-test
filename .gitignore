@@ -485,3 +485,7 @@ $RECYCLE.BIN/
 
 # VSCode
 .vscode/*
+
+# Node
+node_modules/
+package-lock.json

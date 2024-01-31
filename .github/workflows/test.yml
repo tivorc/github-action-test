@@ -10,7 +10,7 @@ on:
 
 env:
   DOTNET_VERSION: '8.0.101'
-  WEBAPP_URL: http://localhost:6900
+  WEBAPP_URL: localhost:6900
 
 jobs:
   test:
@@ -55,24 +55,37 @@ jobs:
         run: dotnet ./output/SchoolAPI.dll &
         env:
           ASPNETCORE_ENVIRONMENT: Development
-          ASPNETCORE_URLS: ${{ env.WEBAPP_URL }}
+          ASPNETCORE_URLS: http://${{ env.WEBAPP_URL }}
 
       # Validate project is running
       - name: Validate project is running
         run: |
           set +e
-          output=$(curl -s -H "Content-Type: application/json" -d '{"query":"{ ping }"}' ${{ env.WEBAPP_URL }}/graphql 2>&1)
+          output=$(curl -s -H "Content-Type: application/json" -d '{"query":"{ ping }"}' http://${{ env.WEBAPP_URL }}/graphql 2>&1)
           is_up=$?
           echo $output
           while [[ ! $output =~ "pong" ]] ; do
-            output=$(curl -s -H "Content-Type: application/json" -d '{"query":"{ ping }"}' ${{ env.WEBAPP_URL }}/graphql 2>&1)
+            output=$(curl -s -H "Content-Type: application/json" -d '{"query":"{ ping }"}' http://${{ env.WEBAPP_URL }}/graphql 2>&1)
             is_up=$?
             echo "$is_up: $output"
             sleep 5
           done
           set -e
 
+      # Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          cd SchoolAPI.Test.WS
+          npm install
+
       # Run tests
       - name: Run tests
-        run: |
-          echo "testing ..."
+        run: npm run test
+        env:
+          WEBAPP_URL: ${{ env.WEBAPP_URL }}
