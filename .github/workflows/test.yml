@@ -36,10 +36,12 @@ jobs:
         run: |
           docker exec database /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P P@ssw0rd -i /test/test.sql
           is_up=$?
+          echo "primer $is_up"
           while [ $is_up -ne 0 ] ; do 
             echo -e $(date) 
             docker exec database /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P P@ssw0rd -i /test/test.sql
             is_up=$?
+            echo "dentro while $is_up"
             sleep 5 
           done
 
