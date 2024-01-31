@@ -20,13 +20,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Run MSSQL Container
-      - name: Run MSSQL Container
+      - name: Start MSSQL Container and setup database
         run: |
           docker compose up -d
 
-      # Test database connection
-      - name: Test database connection
+      - name: Wait for MSSQL to be ready
         run: |
           set +e
           output=$(docker exec database /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P P@ssw0rd -i /test/test.sql 2>&1)
@@ -39,26 +37,20 @@ jobs:
           done
           set -e
 
-      # Setup .NET Core SDK
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      # Build and publish project
-      - name: Build and publish project
+      - name: Build and run WebApp
         run: |
           dotnet publish --configuration Release --output ./output SchoolAPI/SchoolAPI.csproj
-
-      # Run project in background
-      - name: Run project
-        run: dotnet ./output/SchoolAPI.dll &
+          dotnet ./output/SchoolAPI.dll &
         env:
           ASPNETCORE_ENVIRONMENT: Development
           ASPNETCORE_URLS: http://${{ env.WEBAPP_URL }}
 
-      # Validate project is running
-      - name: Validate project is running
+      - name: Wait for WebApp to be ready
         run: |
           set +e
           output=$(curl -s -H "Content-Type: application/json" -d '{"query":"{ ping }"}' http://${{ env.WEBAPP_URL }}/graphql 2>&1)
@@ -72,22 +64,15 @@ jobs:
           done
           set -e
 
-      # Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
 
-      # Install dependencies
-      - name: Install dependencies
+      - name: Run websocket tests
         run: |
           cd SchoolAPI.Test.WS
           npm install
-
-      # Run tests
-      - name: Run tests
-        run: |
-          cd SchoolAPI.Test.WS
           npm run test
         env:
           WEBAPP_URL: ${{ env.WEBAPP_URL }}
