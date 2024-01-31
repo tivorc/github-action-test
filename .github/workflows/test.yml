@@ -64,5 +64,5 @@ jobs:
       # Validate project is running
       - name: Validate project is running
         run: |
-          output=$(curl ${{ env.WEBAPP_URL }}/hello 2>&1)
+          output=$(curl -s ${{ env.WEBAPP_URL }}/hello 2>&1)
           echo "$output"
