@@ -24,7 +24,7 @@ jobs:
 
       - name: Start MSSQL Container and setup database
         run: |
-          docker compose up -d
+          docker compose -f ./.devcontainer/docker-compose.yml up -d db
           set +e
           output=$(docker exec database /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${{ env.DATABASE_PASSWORD }} -i /test/test.sql 2>&1)
           is_up=$?
