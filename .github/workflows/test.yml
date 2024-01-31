@@ -21,16 +21,6 @@ jobs:
         run: |
           docker compose up -d
 
-      # Wait for MSSQL to start
-      # - name: Wait for MSSQL to start
-      #   run: |
-      #     sleep 15
-
-      # 
-      # - name: Get container name
-      #   run: |
-      #     docker ps -a
-
       # Test database connection
       - name: Test database connection
         run: |
@@ -38,13 +28,12 @@ jobs:
           output=$(docker exec database /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P P@ssw0rd -i /test/test.sql 2>&1)
           is_up=$?
           echo "$is_up: $output"
-          while [ $is_up -ne 0 ] || [[ ! $output =~ "db_teacher_count" ]] ; do
+          while [ $is_up -ne 0 ] || [[ ! $output =~ "hay 56 registros" ]] ; do
             output=$(docker exec database /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P P@ssw0rd -i /test/test.sql 2>&1)
             is_up=$?
             echo "$is_up: $output"
             sleep 5 
           done
-          echo $output
           set -e
 
       # - uses: actions/setup-node@v4

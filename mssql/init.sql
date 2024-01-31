@@ -66,4 +66,3 @@ insert into teacher(name) values('Philip')
 insert into teacher(name) values('Simon')
 insert into teacher(name) values('Thomas')
 insert into teacher(name) values('Timothy')
-
