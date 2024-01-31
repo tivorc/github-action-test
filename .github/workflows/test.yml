@@ -44,6 +44,7 @@ jobs:
             echo "$is_up: $output"
             sleep 5 
           done
+          echo $output"
           set -e
 
       # - uses: actions/setup-node@v4
