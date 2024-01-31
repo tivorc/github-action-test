@@ -12,14 +12,14 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: where i am
-        run: pwd
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       # Run MSSQL Container
       - name: Run MSSQL Container
-        uses: isbang/compose-action@v1.5.1
-        with:
-          compose-file: "./docker-compose.yml"
+        run: |
+          docker compose up
 
       # Wait for MSSQL to start
       - name: Wait for MSSQL to start
@@ -31,9 +31,6 @@ jobs:
         run: |
           docker exec mssql /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P P@ssw0rd -Q "select count(id) from school.teacher"
 
-      # - uses: actions/checkout@v4
-      #   with:
-      #     fetch-depth: 0
       # - uses: actions/setup-node@v4
       #   with:
       #     node-version: 20
