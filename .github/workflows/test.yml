@@ -63,6 +63,7 @@ jobs:
           set +e
           output=$(curl -s -H "Content-Type: application/json" -d '{"query":"{ pong }"}' ${{ env.WEBAPP_URL }}/graphql 2>&1)
           is_up=$?
+          echo $output
           while [[ ! $output =~ "pong" ]] ; do
             output=$(curl -s -H "Content-Type: application/json" -d '{"query":"{ pong }"}' ${{ env.WEBAPP_URL }}/graphql 2>&1)
             is_up=$?
