@@ -24,12 +24,17 @@ jobs:
       # Wait for MSSQL to start
       - name: Wait for MSSQL to start
         run: |
-          sleep 10
+          sleep 15
+
+      # 
+      - name: Get container name
+        run: |
+          docker ps -a
 
       # Test database connection
       - name: Test database connection
         run: |
-          docker exec mssql /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P P@ssw0rd -Q "select count(id) from school.teacher"
+          docker exec github-action-test-db-1 /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P P@ssw0rd -Q "select count(id) from school.teacher"
 
       # - uses: actions/setup-node@v4
       #   with:
