@@ -16,7 +16,7 @@ services:
       ACCEPT_EULA: Y
     volumes:
       - ./mssql/:/scripts/
-      - ./test/:/test/
+      - ../test/:/test/
     ports:
       - "1433:1433"
     command:
