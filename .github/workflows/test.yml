@@ -55,7 +55,7 @@ jobs:
         run: dotnet ./output/SchoolAPI.dll &
         env:
           ASPNETCORE_ENVIRONMENT: Development
-          ASPNETCORE_URLS: {{ env.WEBAPP_URL }}
+          ASPNETCORE_URLS: ${{ env.WEBAPP_URL }}
 
       # Wait for project to start
       - name: Wait for project to start
@@ -64,5 +64,5 @@ jobs:
       # Validate project is running
       - name: Validate project is running
         run: |
-          output=$(curl {{ env.WEBAPP_URL }}/hello 2>&1)
+          output=$(curl ${{ env.WEBAPP_URL }}/hello 2>&1)
           echo "$output"
