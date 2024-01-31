@@ -57,12 +57,21 @@ jobs:
           ASPNETCORE_ENVIRONMENT: Development
           ASPNETCORE_URLS: ${{ env.WEBAPP_URL }}
 
-      # Wait for project to start
-      - name: Wait for project to start
-        run: sleep 5
-
       # Validate project is running
       - name: Validate project is running
         run: |
-          output=$(curl -s ${{ env.WEBAPP_URL }}/hello 2>&1)
-          echo "$output"
+          set +e
+          output=$(curl -s -H "Content-Type: application/json" -d '{"query":"{ pong }"}' ${{ env.WEBAPP_URL }}/graphql 2>&1)
+          is_up=$?
+          while [[ ! $output =~ "pong" ]] ; do
+            output=$(curl -s -H "Content-Type: application/json" -d '{"query":"{ pong }"}' ${{ env.WEBAPP_URL }}/graphql 2>&1)
+            is_up=$?
+            echo "$is_up: $output"
+            sleep 5
+          done
+          set -e
+
+      # Run tests
+      - name: Run tests
+        run: |
+          echo "testing ..."
