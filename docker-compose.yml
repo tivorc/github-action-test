@@ -18,6 +18,7 @@ services:
       - -c 
       - |
         # Launch MSSQL and send to background
+        sleep 8
         /opt/mssql/bin/sqlservr &
         pid=$$!
         # Wait for it to be available
