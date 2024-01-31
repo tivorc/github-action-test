@@ -24,6 +24,7 @@ begin
   where id = @id
   for json auto, without_array_wrapper
 end
+go
 
 insert into teacher(name) values('John')
 insert into teacher(name) values('Mary')
