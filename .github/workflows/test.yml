@@ -17,8 +17,9 @@ jobs:
 
       # Run MSSQL Container
       - name: Run MSSQL Container
-        run: |
-          docker compose up -d
+      - uses: isbang/compose-action@v1.5.1
+        with:
+          compose-file: "./docker-compose.yml"
 
       # Wait for MSSQL to start
       - name: Wait for MSSQL to start
