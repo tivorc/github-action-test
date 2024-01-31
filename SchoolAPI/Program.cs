@@ -6,6 +6,7 @@ using SchoolAPI.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<TeacherNotification>();
+builder.Services.AddTransient(s => new DatabaseConnection(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new Exception("No connection string found.")));
 builder.Services.AddGraphQL(b => b
   .AddSchema<SchoolSchema>()
   .AddSystemTextJson()

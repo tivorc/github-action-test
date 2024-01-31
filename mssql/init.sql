@@ -10,6 +10,21 @@ create table teacher(
 )
 go
 
+create procedure teacher_insert
+  @name varchar(250)
+as
+begin
+  declare @id uniqueidentifier = newid()
+
+  insert into teacher(id, name)
+  values(@id, @name)
+
+  select id as Id, name as Name
+  from teacher
+  where id = @id
+  for json auto, without_array_wrapper
+end
+
 insert into teacher(name) values('John')
 insert into teacher(name) values('Mary')
 insert into teacher(name) values('Peter')
@@ -25,44 +40,3 @@ insert into teacher(name) values('Matthew')
 insert into teacher(name) values('Thaddaeus')
 insert into teacher(name) values('Matthias')
 insert into teacher(name) values('Mark')
-insert into teacher(name) values('Luke')
-insert into teacher(name) values('Timothy')
-insert into teacher(name) values('Titus')
-insert into teacher(name) values('Philemon')
-insert into teacher(name) values('Barnabas')
-insert into teacher(name) values('Silas')
-insert into teacher(name) values('Apollos')
-insert into teacher(name) values('Aristarchus')
-insert into teacher(name) values('Epaphras')
-insert into teacher(name) values('Epaphroditus')
-insert into teacher(name) values('James')
-insert into teacher(name) values('John')
-insert into teacher(name) values('Judas')
-insert into teacher(name) values('Luke')
-insert into teacher(name) values('Mark')
-insert into teacher(name) values('Matthew')
-insert into teacher(name) values('Paul')
-insert into teacher(name) values('Peter')
-insert into teacher(name) values('Philip')
-insert into teacher(name) values('Simon')
-insert into teacher(name) values('Thomas')
-insert into teacher(name) values('Timothy')
-insert into teacher(name) values('Titus')
-insert into teacher(name) values('Barnabas')
-insert into teacher(name) values('Silas')
-insert into teacher(name) values('Apollos')
-insert into teacher(name) values('Aristarchus')
-insert into teacher(name) values('Epaphras')
-insert into teacher(name) values('Epaphroditus')
-insert into teacher(name) values('James')
-insert into teacher(name) values('John')
-insert into teacher(name) values('Judas')
-insert into teacher(name) values('Luke')
-insert into teacher(name) values('Mark')
-insert into teacher(name) values('Matthew')
-insert into teacher(name) values('Paul')
-insert into teacher(name) values('Peter')
-insert into teacher(name) values('Philip')
-insert into teacher(name) values('Simon')
-insert into teacher(name) values('Thomas')
-insert into teacher(name) values('Timothy')

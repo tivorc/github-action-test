@@ -10,17 +10,22 @@ namespace SchoolAPI;
 
 public class SchoolMutation : ObjectGraphType
 {
-  public SchoolMutation(TeacherNotification teacherNotification)
+  public SchoolMutation(TeacherNotification teacherNotification, DatabaseConnection databaseConnection)
   {
     Field<TeacherType>("saveTeacher")
-        .Argument<NonNullGraphType<TeacherInput>>("teacher")
-        .ResolveAsync(async context =>
-        {
-          var teacher = context.GetArgument<TeacherDTO>("teacher");
+      .Argument<NonNullGraphType<TeacherInput>>("teacher")
+      .ResolveAsync(async context =>
+      {
+        var teacher = context.GetArgument<TeacherDTO>("teacher");
 
-          var newTeacher = new Teacher(Guid.NewGuid(), teacher.Name);
-          teacherNotification.SendNotification(newTeacher);
-          return await Task.FromResult(newTeacher);
-        });
+        var parameters = new Dictionary<string, object>
+        {
+          { "name", teacher.Name }
+        };
+        var result = await databaseConnection.GetOne<Teacher>("teacher_insert", parameters) ?? throw new ExecutionError("Error saving teacher");
+
+        teacherNotification.SendNotification(result);
+        return await Task.FromResult(result);
+      });
   }
 }

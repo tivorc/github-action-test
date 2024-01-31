@@ -11,6 +11,8 @@ on:
 env:
   DOTNET_VERSION: '8.0.101'
   WEBAPP_URL: localhost:6900
+  DATABASE_NAME: school
+  DATABASE_PASSWORD: P@ssw0rd
 
 jobs:
   test:
@@ -27,10 +29,10 @@ jobs:
       - name: Wait for MSSQL to be ready
         run: |
           set +e
-          output=$(docker exec database /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P P@ssw0rd -i /test/test.sql 2>&1)
+          output=$(docker exec database /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${{ env.DATABASE_PASSWORD }} -i /test/test.sql 2>&1)
           is_up=$?
-          while [ $is_up -ne 0 ] || [[ ! $output =~ "hay 56 registros" ]] ; do
-            output=$(docker exec database /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P P@ssw0rd -i /test/test.sql 2>&1)
+          while [ $is_up -ne 0 ] || [[ ! $output =~ "hay 15 registros" ]] ; do
+            output=$(docker exec database /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${{ env.DATABASE_PASSWORD }} -i /test/test.sql 2>&1)
             is_up=$?
             echo "$is_up: $output"
             sleep 5 
@@ -49,6 +51,7 @@ jobs:
         env:
           ASPNETCORE_ENVIRONMENT: Development
           ASPNETCORE_URLS: http://${{ env.WEBAPP_URL }}
+          ConnectionStrings__DefaultConnection: "Initial Catalog=${{ env.DATABASE_NAME }}; Data Source=localhost; user id=sa;password=${{ env.DATABASE_PASSWORD }};Authentication=SqlPassword;TrustServerCertificate=True;MultipleActiveResultSets=True;"
 
       - name: Wait for WebApp to be ready
         run: |
