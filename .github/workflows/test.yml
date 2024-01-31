@@ -16,11 +16,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Start MSSQL Container and setup database
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Start MSSQL Container and setup database
         run: |
           docker compose up -d
 
@@ -37,12 +36,10 @@ jobs:
           done
           set -e
 
-      - name: Setup .NET Core
+      - name: Build and run WebApp
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: Build and run WebApp
         run: |
           dotnet publish --configuration Release --output ./output SchoolAPI/SchoolAPI.csproj
           dotnet ./output/SchoolAPI.dll &
@@ -64,12 +61,10 @@ jobs:
           done
           set -e
 
-      - name: Setup Node.js
+      - name: Run websocket tests
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
-
-      - name: Run websocket tests
         run: |
           cd SchoolAPI.Test.WS
           npm install
