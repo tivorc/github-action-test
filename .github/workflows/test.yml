@@ -22,14 +22,14 @@ jobs:
           docker compose up -d
 
       # Wait for MSSQL to start
-      - name: Wait for MSSQL to start
-        run: |
-          sleep 15
+      # - name: Wait for MSSQL to start
+      #   run: |
+      #     sleep 15
 
       # 
-      - name: Get container name
-        run: |
-          docker ps -a
+      # - name: Get container name
+      #   run: |
+      #     docker ps -a
 
       # Test database connection
       - name: Test database connection
