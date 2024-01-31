@@ -25,9 +25,6 @@ jobs:
       - name: Start MSSQL Container and setup database
         run: |
           docker compose up -d
-
-      - name: Wait for MSSQL to be ready
-        run: |
           set +e
           output=$(docker exec database /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${{ env.DATABASE_PASSWORD }} -i /test/test.sql 2>&1)
           is_up=$?
@@ -44,17 +41,10 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Build and run WebApp
+      - name: Build and start WebApp
         run: |
           dotnet publish --configuration Release --output ./output SchoolAPI/SchoolAPI.csproj
           dotnet ./output/SchoolAPI.dll &
-        env:
-          ASPNETCORE_ENVIRONMENT: Development
-          ASPNETCORE_URLS: http://${{ env.WEBAPP_URL }}
-          ConnectionStrings__DefaultConnection: "Initial Catalog=${{ env.DATABASE_NAME }}; Data Source=localhost; user id=sa;password=${{ env.DATABASE_PASSWORD }};Authentication=SqlPassword;TrustServerCertificate=True;MultipleActiveResultSets=True;"
-
-      - name: Wait for WebApp to be ready
-        run: |
           set +e
           output=$(curl -s -H "Content-Type: application/json" -d '{"query":"{ ping }"}' http://${{ env.WEBAPP_URL }}/graphql 2>&1)
           is_up=$?
@@ -66,13 +56,17 @@ jobs:
             sleep 5
           done
           set -e
+        env:
+          ASPNETCORE_ENVIRONMENT: Development
+          ASPNETCORE_URLS: http://${{ env.WEBAPP_URL }}
+          ConnectionStrings__DefaultConnection: "Initial Catalog=${{ env.DATABASE_NAME }}; Data Source=localhost; user id=sa;password=${{ env.DATABASE_PASSWORD }};Authentication=SqlPassword;TrustServerCertificate=True;MultipleActiveResultSets=True;"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
 
-      - name: Run websocket tests
+      - name: Run websocket test
         run: |
           cd SchoolAPI.Test.WS
           npm install
