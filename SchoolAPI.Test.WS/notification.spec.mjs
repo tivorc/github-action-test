@@ -27,7 +27,7 @@ function saveOrder() {
   });
 }
 
-test("Should send notification after save an new teacher", () => {
+test("Should send websocket notification after save a new teacher", () => {
   return new Promise(async (resolve, reject) => {
     client.on("connected", () => saveOrder());
 
