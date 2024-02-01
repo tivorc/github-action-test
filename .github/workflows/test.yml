@@ -13,6 +13,7 @@ env:
   WEBAPP_URL: localhost:6900
   DATABASE_NAME: school
   DATABASE_PASSWORD: P@ssw0rd
+  DB_CONTAINER_NAME: database
   SLEEP_TIME: 5
   RETRIES: 10
 
@@ -26,11 +27,12 @@ jobs:
 
       - name: Start MSSQL Container and setup database
         run: |
+          sed -i 's/# CONTAINER_NAME/container_name: ${{ env.DB_CONTAINER_NAME }}/g' ./.devcontainer/docker-compose.yml
           docker compose -f ./.devcontainer/docker-compose.yml up -d db
           set +e
           for i in {1..${{ env.RETRIES }}};
           do
-            output=$(docker exec database /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${{ env.DATABASE_PASSWORD }} -i /test/test.sql 2>&1)
+            output=$(docker exec ${{ env.DB_CONTAINER_NAME }} /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${{ env.DATABASE_PASSWORD }} -i /test/test.sql 2>&1)
             is_up=$?
             if [ $is_up -ne 0 ] || [[ ! $output =~ "hay 15 registros" ]] ; then
               echo "try $i: $is_up - $output"
